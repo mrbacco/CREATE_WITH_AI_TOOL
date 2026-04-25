@@ -9,4 +9,3 @@ uploads/
 data/rag_index.json
 data/*.db
 memory.json
-config.py

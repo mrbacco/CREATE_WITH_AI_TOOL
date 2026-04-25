@@ -15,4 +15,5 @@ opencv-python
 imageio-ffmpeg
 unstructured
 transformers
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch

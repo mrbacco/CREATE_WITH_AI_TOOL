@@ -629,7 +629,12 @@ if(outputType==="video" && data.video_url){
 } else if(outputType==="ppt" && data.ppt_url){
   output.innerHTML = `<div class="ppt-result"><a href="${escapeHtml(data.ppt_url)}" target="_blank">Download PPT</a></div>`;
 } else {
+const notice=(data.notice || "").trim()
+const noticeBlock=notice
+  ? `<div class="web-extract-output"><div class="web-extract-title">Output Type Status</div><div class="web-extract-source">${escapeHtml(notice)}</div></div>`
+  : ""
 output.innerHTML=`
+${noticeBlock}
 <table class="results-table">
 <thead>
 <tr><th>Model</th><th>Response</th></tr>

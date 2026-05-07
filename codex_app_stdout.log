@@ -1,0 +1,3 @@
+BAC: starting Flask app on port 5050 with debug=False
+ * Serving Flask app 'app'
+ * Debug mode: off

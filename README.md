@@ -53,11 +53,12 @@ Only models with configured keys are exposed in the UI.
 ## File analysis behavior
 
 - File type routing uses MIME detection with Python mimetypes.
-- PDFs are extracted with PyMuPDF.
+- PDFs are extracted with PyMuPDF, with pypdf fallback when available.
 - Images are OCR-processed with OpenCV preprocessing + pytesseract.
 - Videos (.mp4, .mov, .avi, .mkv, .webm) are processed with FFmpeg + Whisper transcription.
+- DOCX files are parsed via python-docx when installed, with a built-in XML fallback parser.
 - General documents are parsed with unstructured auto-partitioning.
-- Text summaries use transformers or LLM (Ollama) based on configuration.
+- Text analysis returns concise, human-readable content bullets (`content_bullets`) plus text statistics.
 - Browser-side OCR is performed with Tesseract.js and sent to the backend as OCR hints during Read File Text analysis.
 - Videos are also processed with an offline pipeline for metadata:
   - FFmpeg extracts audio
@@ -106,6 +107,8 @@ data/
 - Python 3.10+
 - Network access to enabled provider APIs
 - API keys for the providers you plan to use
+- Tesseract OCR installed on host OS (for image/PDF OCR)
+- FFmpeg installed on host OS or available via imageio-ffmpeg
 
 Dependencies in requirements.txt:
 
@@ -190,9 +193,6 @@ RAG_CHUNK_SIZE=900
 RAG_CHUNK_OVERLAP=120
 RAG_VECTOR_DIMS=192
 RAG_MAX_SNIPPET_CHARS=800
-
-TEXT_SUMMARY_BACKEND="llm"      # llm | transformers | auto
-TRANSFORMERS_SUMMARY_MODEL="sshleifer/distilbart-cnn-12-6"
 ```
 
 ## Core API contracts
@@ -269,7 +269,7 @@ Lists indexed document records.
 - GET with file_id: analyzes indexed item by ID.
 - POST with multipart file(s): analyzes uploaded files directly.
 - Image files return vision-style analytical_description.
-- Text files return statistical text analysis payload.
+- Text files return concise `content_bullets` and text analysis stats (`word_count`, `sentence_count`, `top_words`, etc.).
 
 ### GET /read_file
 

@@ -599,37 +599,22 @@ def bac_tool():
     bac_log("BAC: POST /bac_tool completed")
     bac_log_major(f"BAC: /bac_tool completed for model {model} output_type={output_type} rag_hits={len(rag_hits)}")
 
-    # Stubbed output type handling
-    if output_type == "video":
-        # TODO: Implement video generation
-        return jsonify({
-            "response": "Video generation is not yet implemented.",
-            "video_url": "/static/sample_video.mp4",
-            "rag_hits": len(rag_hits),
-            "attached_files": len(file_ids),
-        })
-    elif output_type == "pdf":
-        # TODO: Implement PDF generation
-        return jsonify({
-            "response": "PDF generation is not yet implemented.",
-            "pdf_url": "/static/sample.pdf",
-            "rag_hits": len(rag_hits),
-            "attached_files": len(file_ids),
-        })
-    elif output_type == "ppt":
-        # TODO: Implement PPT generation
-        return jsonify({
-            "response": "PPT generation is not yet implemented.",
-            "ppt_url": "/static/sample.pptx",
-            "rag_hits": len(rag_hits),
-            "attached_files": len(file_ids),
-        })
-    else:
+    # Non-text export types currently return text content with an explicit status.
+    if output_type in {"video", "pdf", "ppt"}:
         return jsonify({
             "response": response,
+            "requested_output_type": output_type,
+            "implemented": False,
+            "notice": f"{output_type.upper()} export is not implemented yet. Showing text response instead.",
             "rag_hits": len(rag_hits),
             "attached_files": len(file_ids),
         })
+
+    return jsonify({
+        "response": response,
+        "rag_hits": len(rag_hits),
+        "attached_files": len(file_ids),
+    })
 
 
 # -------------------------
